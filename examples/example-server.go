@@ -53,7 +53,7 @@ func websocketHandler(ws *websocket.Conn) {
 		var input string
 		err := websocket.Message.Receive(ws, &input)
 		if err != nil {
-			fmt.Println("Can't receive")
+			fmt.Println(err)
 			break
 		}
 		//fmt.Println("Received from client: " + input)
@@ -61,7 +61,7 @@ func websocketHandler(ws *websocket.Conn) {
 		reply := c.ParseToFormat(c.Parser, input, c.FormatLattice)
 		err = websocket.Message.Send(ws, reply)
 		if err != nil {
-			fmt.Println("Can't send")
+			fmt.Println(err)
 			break
 		}
 		//fmt.Println("Sent: " + reply)
