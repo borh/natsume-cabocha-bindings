@@ -33,53 +33,18 @@ package main
 import (
 	c "../"
 	"code.google.com/p/go.net/websocket"
-	"encoding/json"
-	"encoding/xml"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
 )
 
-func handler(w http.ResponseWriter, r *http.Request) {
+func bodyReadHelper(w http.ResponseWriter, r *http.Request) string {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		log.Println("HTTP POST Body error!", err)
 	}
-	s := c.ParseToFormat(c.Parser, string(body), c.FormatLattice)
-	fmt.Fprintf(w, "%s", s)
-}
-
-func xmlHandler(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Println("HTTP POST Body error!", err)
-	}
-	s := c.ParseToFormat(c.Parser, string(body), c.FormatLattice)
-
-	sen := c.NewSentence(s)
-
-	xStr, err := xml.MarshalIndent(sen, "", "  ")
-	if err != nil {
-		log.Println(err)
-	}
-	w.Write([]byte(xStr))
-}
-
-func jsonHandler(w http.ResponseWriter, r *http.Request) {
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		log.Println("HTTP POST Body error!", err)
-	}
-	s := c.ParseToFormat(c.Parser, string(body), c.FormatLattice)
-
-	sen := c.NewSentence(s)
-
-	xStr, err := json.MarshalIndent(sen, "", "  ")
-	if err != nil {
-		log.Println(err)
-	}
-	w.Write([]byte(xStr))
+	return string(body)
 }
 
 // TODO most likely needs some more work and testing
@@ -104,9 +69,15 @@ func websocketHandler(ws *websocket.Conn) {
 }
 
 func main() {
-	http.HandleFunc("/", handler)
-	http.HandleFunc("/xml", xmlHandler)
-	http.HandleFunc("/json", jsonHandler)
+	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "%s", c.ParseToLatticeString(bodyReadHelper(w, r)))
+	})
+	http.HandleFunc("/xml", func(w http.ResponseWriter, r *http.Request) {
+		w.Write(c.ParseToSentence(bodyReadHelper(w, r)).ToXML())
+	})
+	http.HandleFunc("/json", func(w http.ResponseWriter, r *http.Request) {
+		w.Write(c.ParseToSentence(bodyReadHelper(w, r)).ToJSON())
+	})
 	http.Handle("/ws", websocket.Handler(websocketHandler))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

@@ -43,6 +43,7 @@ import (
 	re "regexp"
 	"strconv"
 	"strings"
+	"encoding/json"
 )
 
 // Morpheme struct containing named strings for UniDic features.
@@ -197,6 +198,34 @@ const (
 func ParseToFormat(cabo *C.cabocha_t, s string, format _Ctype_int) string {
 	tree := C.cabocha_sparse_totree(cabo, C.CString(s))
 	return C.GoString(C.cabocha_tree_tostr(tree, format))
+}
+
+// Convenience function that returns the CaboCha output as a Sentence
+// struct.
+func ParseToSentence(s string) *Sentence {
+	return NewSentence(ParseToFormat(Parser, s, FormatLattice))
+}
+
+// Convenience function that returns the CaboCha output as a lattice
+// formatted string.
+func ParseToLatticeString(s string) string {
+	return ParseToFormat(Parser, s, FormatLattice)
+}
+
+func (s Sentence) ToJSON() []byte {
+	jsonSentence, err := json.MarshalIndent(s, "", "  ")
+	if err != nil {
+		log.Println(err)
+	}
+	return []byte(jsonSentence)
+}
+
+func (s Sentence) ToXML() []byte {
+	xmlSentence, err := xml.MarshalIndent(s, "", "  ")
+	if err != nil {
+		log.Println(err)
+	}
+	return []byte(xmlSentence)
 }
 
 // better way to instantiate only once?
