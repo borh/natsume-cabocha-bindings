@@ -46,7 +46,7 @@ import (
 	"encoding/json"
 )
 
-// Morpheme struct containing named strings for UniDic features.
+// Token struct containing named strings for UniDic features.
 type Token struct {
 	Id       int               `xml:"id,attr" json:"id"`
 	Features map[string]string `xml:"features" json:"features"`
@@ -62,9 +62,12 @@ type Chunk struct {
 	Tokens []*Token `json:"tokens"`
 }
 
-// Sentence struct type wrapper for slice of Morpheme structs.
+// Sentence struct type wrapper for slice of Chunk structs.
 type Sentence struct {
-	Chunks []*Chunk `json:"chunks"`
+	Chunks []*Chunk `json:"chunks"` // TODO in the JSON output,
+					// this seems slightly
+					// unneeded, an array would do
+					// fine as well.
 }
 
 type TokenXML struct {
@@ -87,7 +90,7 @@ type ChunkXML struct {
 	Tokens  []*TokenXML // `xml:"tok"`
 }
 
-// Sentence struct type wrapper for slice of Morpheme structs.
+// Sentence struct type wrapper for slice of Token structs.
 type SentenceXML struct {
 	XMLName xml.Name `xml:"sentence"`
 	//Chunks  []*Chunk// `xml:"chunk"`
