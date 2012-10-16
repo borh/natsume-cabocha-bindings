@@ -42,7 +42,7 @@ import (
 func bodyReadHelper(w http.ResponseWriter, r *http.Request) string {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
-		log.Println("HTTP POST Body error!", err)
+		log.Println("HTTP POST Body error:", err)
 	}
 	return string(body)
 }
@@ -53,7 +53,7 @@ func websocketHandler(ws *websocket.Conn) {
 		var input string
 		err := websocket.Message.Receive(ws, &input)
 		if err != nil {
-			fmt.Println(err)
+			log.Println("WebSocket message not recieved:", err)
 			break
 		}
 		//fmt.Println("Received from client: " + input)
@@ -61,7 +61,7 @@ func websocketHandler(ws *websocket.Conn) {
 		reply := c.ParseToFormat(c.Parser, input, c.FormatLattice)
 		err = websocket.Message.Send(ws, reply)
 		if err != nil {
-			fmt.Println(err)
+			log.Println("WebSocket message not sent:", err)
 			break
 		}
 		//fmt.Println("Sent: " + reply)
