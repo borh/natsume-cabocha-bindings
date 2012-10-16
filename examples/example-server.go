@@ -58,7 +58,7 @@ func websocketHandler(ws *websocket.Conn) {
 		}
 		//fmt.Println("Received from client: " + input)
 
-		reply := c.ParseToFormat(c.Parser, input, c.FormatLattice)
+		reply := c.ParseToLatticeString(input)
 		err = websocket.Message.Send(ws, reply)
 		if err != nil {
 			log.Println("WebSocket message not sent:", err)
