@@ -38,19 +38,45 @@ import "C"
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"encoding/xml"
 	"log"
 	re "regexp"
 	"strconv"
 	"strings"
-	"encoding/json"
+	"unicode/utf8"
 )
 
 // Token struct containing named strings for UniDic features.
 type Token struct {
-	Id       int               `xml:"id,attr" json:"id"`
-	Features map[string]string `xml:"features" json:"features"`
-	Ne       string            `xml:"ne,attr" json:"ne"`
+	Begin    int    `xml:"begin,attr" json:"begin"`
+	End      int    `xml:"end,attr" json:"end"`
+	Pos1     string `xml:"pos1" json:"pos1"`
+	Pos2     string `xml:"pos2" json:"pos2"`
+	Pos3     string `xml:"pos3" json:"pos3"`
+	Pos4     string `xml:"pos4" json:"pos4"`
+	CType    string `xml:"cType" json:"cType"`
+	CForm    string `xml:"cForm" json:"cForm"`
+	LForm    string `xml:"lForm" json:"lForm"`
+	Lemma    string `xml:"lemma" json:"lemma"`
+	Orth     string `xml:"orth" json:"orth"`
+	Pron     string `xml:"pron" json:"pron"`
+	Kana     string `xml:"kana" json:"kana"`
+	Goshu    string `xml:"goshu" json:"goshu"`
+	OrthBase string `xml:"orthBase" json:"orthBase"`
+	PronBase string `xml:"pronBase" json:"pronBase"`
+	KanaBase string `xml:"kanaBase" json:"kanaBase"`
+	FormBase string `xml:"formBase" json:"formBase"`
+	IType    string `xml:"iType" json:"iType"`
+	IForm    string `xml:"iForm" json:"iForm"`
+	IConType string `xml:"iConType json:"iConType"`
+	FType    string `xml:"fType" json:"fType"`
+	FForm    string `xml:"fForm" json:"fForm"`
+	FConType string `xml:"fConType" json:"fConType"`
+	AType    string `xml:"aType" json:"aType"`
+	AConType string `xml:"aConType" json:"aConType"`
+	AModType string `xml:"aModType" json:"aModType"`
+	Ne       string `xml:"ne,attr" json:"ne"`
 }
 
 type Chunk struct {
@@ -65,9 +91,9 @@ type Chunk struct {
 // Sentence struct type wrapper for slice of Chunk structs.
 type Sentence struct {
 	Chunks []*Chunk `json:"chunks"` // TODO in the JSON output,
-					// this seems slightly
-					// unneeded, an array would do
-					// fine as well.
+	// this seems slightly
+	// unneeded, an array would do
+	// fine as well.
 }
 
 type TokenXML struct {
@@ -169,19 +195,41 @@ func NewSentence(cabocha_out string) *Sentence {
 		if err != nil {
 			log.Println("Error decoding feature csv field:", err)
 		}
-		features := make(map[string]string)
-		for j, el := range featuresSlice {
-			features[featureMap[j]] = el
-		}
+
+		end := i + utf8.RuneCountInString(featuresSlice[8])
 
 		t := &Token{
-			Id:       i,
-			Features: features,
+			Begin:    i,
+			End:      end,
+			Pos1:     featuresSlice[0],
+			Pos2:     featuresSlice[1],
+			Pos3:     featuresSlice[2],
+			Pos4:     featuresSlice[3],
+			CType:    featuresSlice[4],
+			CForm:    featuresSlice[5],
+			LForm:    featuresSlice[6],
+			Lemma:    featuresSlice[7],
+			Orth:     featuresSlice[8],
+			Pron:     featuresSlice[9],
+			Kana:     featuresSlice[10],
+			Goshu:    featuresSlice[11],
+			OrthBase: featuresSlice[12],
+			PronBase: featuresSlice[13],
+			KanaBase: featuresSlice[14],
+			FormBase: featuresSlice[15],
+			IType:    featuresSlice[16],
+			IForm:    featuresSlice[17],
+			IConType: featuresSlice[18],
+			FType:    featuresSlice[19],
+			FForm:    featuresSlice[20],
+			FConType: featuresSlice[21],
+			AType:    featuresSlice[22],
+			AConType: featuresSlice[23],
+			AModType: featuresSlice[24],
 			Ne:       fields[2],
 		}
 		c.Tokens = append(c.Tokens, t)
-
-		i += 1
+		i = end
 	}
 	return s
 }
@@ -216,7 +264,7 @@ func ParseToLatticeString(s string) string {
 }
 
 func (s Sentence) ToJSON() []byte {
-	jsonSentence, err := json.MarshalIndent(s, "", "  ")
+	jsonSentence, err := json.MarshalIndent(s.Chunks, "", "  ")
 	if err != nil {
 		log.Println(err)
 	}
