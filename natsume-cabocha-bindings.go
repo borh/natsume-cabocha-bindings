@@ -27,7 +27,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 */
-package natsume_cabocha_binding
+package natsume_cabocha_bindings
 
 // #cgo LDFLAGS: -lcabocha
 // #include <stdio.h>
@@ -211,6 +211,7 @@ func NewSentence(cabocha_out string) *Sentence {
 				Orth:     fields[0],
 				Lemma:    fields[0],
 				OrthBase: fields[0],
+				Goshu:    "不明",
 				Ne:       fields[2]})
 		} else {
 			c.Tokens = append(c.Tokens, &Token{
