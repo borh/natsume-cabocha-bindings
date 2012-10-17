@@ -56,7 +56,6 @@ func websocketHandler(ws *websocket.Conn) {
 			log.Println("WebSocket message not recieved:", err)
 			break
 		}
-		//fmt.Println("Received from client: " + input)
 
 		reply := c.ParseToLatticeString(input)
 		err = websocket.Message.Send(ws, reply)
@@ -64,7 +63,24 @@ func websocketHandler(ws *websocket.Conn) {
 			log.Println("WebSocket message not sent:", err)
 			break
 		}
-		//fmt.Println("Sent: " + reply)
+	}
+}
+
+func websocketHandlerJSON(ws *websocket.Conn) {
+	for {
+		var input string
+		err := websocket.Message.Receive(ws, &input)
+		if err != nil {
+			log.Println("WebSocket message not recieved:", err)
+			break
+		}
+
+		reply := c.ParseToSentence(input).ToJSON()
+		err = websocket.Message.Send(ws, reply)
+		if err != nil {
+			log.Println("WebSocket message not sent:", err)
+			break
+		}
 	}
 }
 
@@ -79,5 +95,6 @@ func main() {
 		w.Write(c.ParseToSentence(bodyReadHelper(w, r)).ToJSON())
 	})
 	http.Handle("/ws", websocket.Handler(websocketHandler))
+	http.Handle("/ws/json", websocket.Handler(websocketHandlerJSON))
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
