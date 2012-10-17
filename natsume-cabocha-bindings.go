@@ -196,39 +196,53 @@ func NewSentence(cabocha_out string) *Sentence {
 			log.Println("Error decoding feature csv field:", err)
 		}
 
-		end := i + utf8.RuneCountInString(featuresSlice[8])
+		end := i + utf8.RuneCountInString(fields[0])
 
-		t := &Token{
-			Begin:    i,
-			End:      end,
-			Pos1:     featuresSlice[0],
-			Pos2:     featuresSlice[1],
-			Pos3:     featuresSlice[2],
-			Pos4:     featuresSlice[3],
-			CType:    featuresSlice[4],
-			CForm:    featuresSlice[5],
-			LForm:    featuresSlice[6],
-			Lemma:    featuresSlice[7],
-			Orth:     featuresSlice[8],
-			Pron:     featuresSlice[9],
-			Kana:     featuresSlice[10],
-			Goshu:    featuresSlice[11],
-			OrthBase: featuresSlice[12],
-			PronBase: featuresSlice[13],
-			KanaBase: featuresSlice[14],
-			FormBase: featuresSlice[15],
-			IType:    featuresSlice[16],
-			IForm:    featuresSlice[17],
-			IConType: featuresSlice[18],
-			FType:    featuresSlice[19],
-			FForm:    featuresSlice[20],
-			FConType: featuresSlice[21],
-			AType:    featuresSlice[22],
-			AConType: featuresSlice[23],
-			AModType: featuresSlice[24],
-			Ne:       fields[2],
+		if len(featuresSlice) == 6 {
+			c.Tokens = append(c.Tokens, &Token{
+				Begin:    i,
+				End:      end,
+				Pos1:     featuresSlice[0],
+				Pos2:     featuresSlice[1],
+				Pos3:     featuresSlice[2],
+				Pos4:     featuresSlice[3],
+				CType:    featuresSlice[4],
+				CForm:    featuresSlice[5],
+				Orth:     fields[0],
+				Lemma:    fields[0],
+				OrthBase: fields[0],
+				Ne:       fields[2]})
+		} else {
+			c.Tokens = append(c.Tokens, &Token{
+				Begin:    i,
+				End:      end,
+				Pos1:     featuresSlice[0],
+				Pos2:     featuresSlice[1],
+				Pos3:     featuresSlice[2],
+				Pos4:     featuresSlice[3],
+				CType:    featuresSlice[4],
+				CForm:    featuresSlice[5],
+				LForm:    featuresSlice[6],
+				Lemma:    featuresSlice[7],
+				Orth:     featuresSlice[8],
+				Pron:     featuresSlice[9],
+				Kana:     featuresSlice[10],
+				Goshu:    featuresSlice[11],
+				OrthBase: featuresSlice[12],
+				PronBase: featuresSlice[13],
+				KanaBase: featuresSlice[14],
+				FormBase: featuresSlice[15],
+				IType:    featuresSlice[16],
+				IForm:    featuresSlice[17],
+				IConType: featuresSlice[18],
+				FType:    featuresSlice[19],
+				FForm:    featuresSlice[20],
+				FConType: featuresSlice[21],
+				AType:    featuresSlice[22],
+				AConType: featuresSlice[23],
+				AModType: featuresSlice[24],
+				Ne:       fields[2]})
 		}
-		c.Tokens = append(c.Tokens, t)
 		i = end
 	}
 	return s
