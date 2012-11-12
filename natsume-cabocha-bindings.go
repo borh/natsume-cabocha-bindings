@@ -135,7 +135,7 @@ func NewChunk(s string) *Chunk {
 	return c
 }
 
-var chunkHeaderRe = re.MustCompile(`^\*[^\t\*]+$`)
+var chunkHeaderRe = re.MustCompile(`^\*[^\t]+$`)
 
 var featureMap = map[int]string{
 	0:  "pos1",
