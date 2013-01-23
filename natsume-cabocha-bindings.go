@@ -251,4 +251,4 @@ func (s Sentence) ToXML() []byte {
 }
 
 // better way to instantiate only once?
-var Parser = NewParser("-d /usr/lib64/mecab/dic/unidic -b /usr/lib64/mecab/dic/unidic/dicrc -r /etc/cabocharc-unidic -P UNIDIC")
+var Parser = NewParser("")
