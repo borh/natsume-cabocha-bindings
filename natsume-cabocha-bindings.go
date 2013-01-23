@@ -61,21 +61,13 @@ type Token struct {
 	Lemma    string `xml:"lemma" json:"lemma"`
 	Orth     string `xml:"orth" json:"orth"`
 	Pron     string `xml:"pron" json:"pron"`
-	Kana     string `xml:"kana" json:"kana"`
-	Goshu    string `xml:"goshu" json:"goshu"`
 	OrthBase string `xml:"orthBase" json:"orthBase"`
 	PronBase string `xml:"pronBase" json:"pronBase"`
-	KanaBase string `xml:"kanaBase" json:"kanaBase"`
-	FormBase string `xml:"formBase" json:"formBase"`
+	Goshu    string `xml:"goshu" json:"goshu"`
 	IType    string `xml:"iType" json:"iType"`
 	IForm    string `xml:"iForm" json:"iForm"`
-	IConType string `xml:"iConType json:"iConType"`
 	FType    string `xml:"fType" json:"fType"`
 	FForm    string `xml:"fForm" json:"fForm"`
-	FConType string `xml:"fConType" json:"fConType"`
-	AType    string `xml:"aType" json:"aType"`
-	AConType string `xml:"aConType" json:"aConType"`
-	AModType string `xml:"aModType" json:"aModType"`
 	Ne       string `xml:"ne,attr" json:"ne"`
 }
 
@@ -136,34 +128,6 @@ func NewChunk(s string) *Chunk {
 }
 
 var chunkHeaderRe = re.MustCompile(`^\*[^\t]+$`)
-
-var featureMap = map[int]string{
-	0:  "pos1",
-	1:  "pos2",
-	2:  "pos3",
-	3:  "pos4",
-	4:  "cType",
-	5:  "cForm",
-	6:  "lForm",
-	7:  "lemma",
-	8:  "orth",
-	9:  "pron",
-	10: "kana",
-	11: "goshu",
-	12: "orthBase",
-	13: "pronBase",
-	14: "kanaBase",
-	15: "formBase",
-	16: "iType",
-	17: "iForm",
-	18: "iConType",
-	19: "fType",
-	20: "fForm",
-	21: "fConType",
-	22: "aType",
-	23: "aConType",
-	24: "aModType",
-}
 
 // Takes the CaboCha output of one sentence as a string and returns a pointer to the corresponding Sentence struct.
 // CaboCha output should comprise one (un-split) sentence only.
@@ -227,21 +191,13 @@ func NewSentence(cabocha_out string) *Sentence {
 				Lemma:    featuresSlice[7],
 				Orth:     featuresSlice[8],
 				Pron:     featuresSlice[9],
-				Kana:     featuresSlice[10],
-				Goshu:    featuresSlice[11],
-				OrthBase: featuresSlice[12],
-				PronBase: featuresSlice[13],
-				KanaBase: featuresSlice[14],
-				FormBase: featuresSlice[15],
-				IType:    featuresSlice[16],
-				IForm:    featuresSlice[17],
-				IConType: featuresSlice[18],
-				FType:    featuresSlice[19],
-				FForm:    featuresSlice[20],
-				FConType: featuresSlice[21],
-				AType:    featuresSlice[22],
-				AConType: featuresSlice[23],
-				AModType: featuresSlice[24],
+				OrthBase: featuresSlice[10],
+				PronBase: featuresSlice[11],
+				Goshu:    featuresSlice[12],
+				IType:    featuresSlice[13],
+				IForm:    featuresSlice[14],
+				FType:    featuresSlice[15],
+				FForm:    featuresSlice[16],
 				Ne:       fields[2]})
 		}
 		i = end
